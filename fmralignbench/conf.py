@@ -1,2 +1,2 @@
-ROOT_FOLDER = '/storage/store2/work/tbazeill/neuroimage'
+ROOT_FOLDER = '~/work/fmralign-benchmark'
 N_JOBS = 15
