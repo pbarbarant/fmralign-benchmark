@@ -8,8 +8,11 @@ from fmralignbench.fetchers import fetch_ibc
 from fmralignbench.plot_utils import make_bench_figure, make_within_subject_decoding_figure, make_supplementary1_roi_minus_fullbrain_figure
 warnings.filterwarnings(action='once')
 
-input_methods = ["anat_inter_subject", "pairwise_scaled_orthogonal",
-                 "pairwise_ot_e-1",  "srm", "intra_subject", "HA"]
+#input_methods = ["anat_inter_subject", "pairwise_scaled_orthogonal",
+#                 "pairwise_ot_e-1",  "srm", "intra_subject", "HA"]
+
+input_methods = ["pairwise_scaled_orthogonal",
+                 "pairwise_ot_e-1", "intra_subject"]
 
 
 if N_JOBS / 15 > 1:
@@ -27,7 +30,7 @@ experiment_parameters = list(itertools.product(
     WHOLEBRAIN_DATASETS, input_methods))
 
 Parallel(n_jobs=n_pipes)(delayed(inter_subject_align_decode)(input_method, dataset_params, "schaefer",
-                                                             ROOT_FOLDER, n_pieces=300, n_jobs=n_jobs) for dataset_params, input_method in experiment_parameters)
+                                                             ROOT_FOLDER, n_pieces=1, n_jobs=n_jobs) for dataset_params, input_method in experiment_parameters)
 
 ROI = False
 make_bench_figure(ROI)

@@ -1,2 +1,2 @@
-ROOT_FOLDER = '~/work/fmralign-benchmark'
+ROOT_FOLDER = '/home/onyxia/work/'
 N_JOBS = 15

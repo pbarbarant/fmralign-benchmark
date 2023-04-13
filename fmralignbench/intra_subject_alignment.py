@@ -15,7 +15,7 @@ import nibabel as nib
 import numpy as np
 from fmralign.pairwise_alignment import PairwiseAlignment, generate_Xi_Yi
 from joblib import Parallel, delayed, Memory
-from nilearn.input_data.masker_validation import check_embedded_nifti_masker
+from nilearn.maskers._masker_validation import _check_embedded_nifti_masker
 from sklearn.model_selection import ShuffleSplit
 from sklearn.base import clone
 from fmralign._utils import _make_parcellation,_intersect_clustering_mask
@@ -174,7 +174,7 @@ class IntraSubjectAlignment(PairwiseAlignment):
                  smoothing_fwhm=None, standardize=None, detrend=False,
                  target_affine=None, target_shape=None, low_pass=None,
                  high_pass=None, t_r=None,
-                 memory=Memory(cachedir=None), memory_level=0,
+                 memory=Memory(), memory_level=0,
                  n_jobs=1, verbose=0):
         super().__init__(
             alignment_method=alignment_method, n_pieces=n_pieces,
@@ -201,7 +201,7 @@ class IntraSubjectAlignment(PairwiseAlignment):
         -------
         self
         """
-        self.masker_ = check_embedded_nifti_masker(self)
+        self.masker_ = _check_embedded_nifti_masker(self)
         self.masker_.n_jobs = 1  # self.n_jobs
         # Avoid warning with imgs != None
         # if masker_ has been provided a mask_img
@@ -268,7 +268,7 @@ class EnsembledSubjectsIntraAlignment(PairwiseAlignment):
                  smoothing_fwhm=None, standardize=None, detrend=False,
                  target_affine=None, target_shape=None, low_pass=None,
                  high_pass=None, t_r=None,
-                 memory=Memory(cachedir=None), memory_level=0,
+                 memory=Memory(), memory_level=0,
                  n_jobs=1, verbose=0):
         super().__init__(
             alignment_method=alignment_method, n_pieces=n_pieces,
@@ -282,7 +282,7 @@ class EnsembledSubjectsIntraAlignment(PairwiseAlignment):
         ''' X and Y must be lists of equal length (number of subjects)
         Inside each element may lists or a Niimgs (all of the same len / shape)
         '''
-        self.masker_ = check_embedded_nifti_masker(self)
+        self.masker_ = _check_embedded_nifti_masker(self)
         self.masker_.n_jobs = self.n_jobs
 
         if type(self.clustering) == nib.nifti1.Nifti1Image or os.path.isfile(self.clustering):
@@ -291,7 +291,7 @@ class EnsembledSubjectsIntraAlignment(PairwiseAlignment):
                 reduced_mask = _intersect_clustering_mask(
                     self.clustering, self.masker_.mask_img)
                 self.mask = reduced_mask
-                self.masker_ = check_embedded_nifti_masker(self)
+                self.masker_ = _check_embedded_nifti_masker(self)
                 self.masker_.n_jobs = self.n_jobs
                 self.masker_.fit()
                 warnings.warn(
